@@ -1,5 +1,7 @@
 import os
 from src.codificador import base64 as b64
+from src.codificador import cesar
+from src.codificador import decimado 
 from src.buffer import leer_archivo, escribir_archivo
 
 def procesar_base64(params):
@@ -18,9 +20,35 @@ def procesar_base64(params):
     escribir_archivo(salida, resultado)
     return salida
 
+def procesar_cesar(params): 
+    entrada = params["file"] 
+    decode = bool(params.get("decode")) 
+    extension = params.get("extension", "") 
+    shift = int(params.get("shift", 3)) 
 
+    data = leer_archivo(entrada) 
+    resultado = cesar.decodificar_bytes(data, shift) if decode else cesar.codificar_bytes(data, shift) 
+    
+    salida = _ruta_salida(entrada, extension, decode) 
+    escribir_archivo(salida, resultado) 
+    return salida
 
+def procesar_decimado(params):                   
+    """
+    Cifrado/Descifrado Decimado (mod 256): C = a * key (mod 256)
+    - Para descifrar, se usa el inverso modular de key (debe ser impar).
+    """
+    entrada   = params["file"]
+    decode    = bool(params.get("decode"))
+    extension = params.get("extension", "")
+    key       = int(params.get("key"))  
 
+    data = leer_archivo(entrada)
+    resultado = decimado.decodificar_bytes(data, key) if decode else decimado.codificar_bytes(data, key)
+
+    salida = _ruta_salida(entrada, extension, decode)
+    escribir_archivo(salida, resultado)
+    return salida
 
 
 def _proyecto_root() -> str:

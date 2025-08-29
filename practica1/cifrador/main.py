@@ -1,6 +1,6 @@
 import argparse
 import os
-from src.controlador import procesar_base64
+from src.controlador import procesar_base64, procesar_cesar, procesar_decimado
 
 def main():
     tipos_de_cifrado = ['b64', 'af', 'ud', 'ce']
@@ -12,6 +12,10 @@ def main():
     parser.add_argument("-e", "--extension", required=True, help="Extensión para el archivo de salida (ej. txt)")
     parser.add_argument("-d", "--decode", action="store_true", help="Descifrar el archivo (si no se especifica, se codifica)")
 
+    parser.add_argument("--shift", type=int, default=3, help="Desplazamiento para César (0..255; por defecto 3)")
+    parser.add_argument("--key", type=int,
+                        help="Llave multiplicativa para Decimado (0..255; debe ser IMPAR para poder descifrar)")
+
     args = parser.parse_args()
 
     # Crear diccionario con parámetros
@@ -19,7 +23,9 @@ def main():
         "type": args.type,
         "file": args.file,
         "extension": args.extension,
-        "decode": args.decode
+        "decode": args.decode,
+        "shift": args.shift,
+        "key": args.key, 
     }
 
     # Validar archivo de entrada
@@ -34,9 +40,11 @@ def main():
         elif params["type"] == "af":
             raise NotImplementedError("Error: El cifrado Afín (af) no está implementado.")
         elif params["type"] == "ud":
-            raise NotImplementedError("Error: El cifrado Decimado (ud) no está implementado.")
+            if params["key"] is None:
+                raise ValueError("Para 'ud' (decimado) debes proporcionar --key (0..255, impar para descifrar).")
+            procesar_decimado(params)
         elif params["type"] == "ce":
-            raise NotImplementedError("Error: El cifrado César (ce) no está implementado.")
+            procesar_cesar(params)
     except Exception as e:
         print(f"Error: {str(e)}")
 
