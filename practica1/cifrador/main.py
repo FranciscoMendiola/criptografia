@@ -1,6 +1,6 @@
 import argparse
 import os
-from src.controlador import procesar_base64, procesar_cesar, procesar_decimado
+from src.controlador import procesar_base64, procesar_cesar, procesar_decimado, procesar_afin
 
 def main():
     tipos_de_cifrado = ['b64', 'af', 'ud', 'ce']
@@ -22,7 +22,7 @@ def main():
         "file": args.file,
         "extension": args.extension,
         "decode": args.decode,
-        "shift": args.shift,
+        "shift": args.shift, 
         "key": args.key, 
     }
 
@@ -34,7 +34,7 @@ def main():
         if params["type"] == "b64":
             procesar_base64(params)
         elif params["type"] == "af":
-            raise NotImplementedError("Error: El cifrado Afín (af) no está implementado.")
+            procesar_afin(params)
         elif params["type"] == "ud":
             if params["key"] is None:
                 raise ValueError("Para decimado debes proporcionar --key (0..255, impar para descifrar).")

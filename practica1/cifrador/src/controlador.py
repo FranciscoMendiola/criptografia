@@ -2,6 +2,7 @@ import os
 from src.codificador import base64 as b64
 from src.codificador import cesar
 from src.codificador import decimado 
+from src.codificador import afin
 from src.buffer import leer_archivo, escribir_archivo
 
 def procesar_base64(params):
@@ -50,6 +51,28 @@ def procesar_decimado(params):
     escribir_archivo(salida, resultado)
     return salida
 
+def procesar_afin(params):
+    """
+    Cifrado/Descifrado Afin (mod 256): C = a * P + b (mod 256)
+    - Para descifrar, se usa el inverso modular de a (debe ser impar).
+    """
+    entrada   = params["file"]
+    decode    = bool(params.get("decode"))
+    extension = params.get("extension", "")
+    a         = int(params.get("key"))  
+    b         = int(params.get("shift"))  
+
+    data = leer_archivo(entrada)
+    if decode:
+        afin_decoded = afin.decodificar_bytes(data, a, b)
+        resultado = afin_decoded
+    else:
+        afin_encoded = afin.codificar_bytes(data, a, b)
+        resultado = afin_encoded
+
+    salida = _ruta_salida(entrada, extension, decode)
+    escribir_archivo(salida, resultado)
+    return salida
 
 def _proyecto_root() -> str:
     """
