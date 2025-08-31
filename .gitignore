@@ -1,0 +1,15 @@
+file_code/
+file_decode/
+_pycache_/
+# Ignore node_modules
+node_modules/
+# Ignore build output
+dist/
+build/
+# Ignore environment variable files
+.env
+.env.local
+.env.*.local
+# Ignore logs
+logs
+*.log 

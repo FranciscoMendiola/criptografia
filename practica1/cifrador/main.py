@@ -34,6 +34,8 @@ def main():
         if params["type"] == "b64":
             procesar_base64(params)
         elif params["type"] == "af":
+            if params["key" and "shift"] is None:
+                raise ValueError("Para decimado debes proporcionar --key y --shift (0..255, impar para descifrar).")
             procesar_afin(params)
         elif params["type"] == "ud":
             if params["key"] is None:
