@@ -1,6 +1,7 @@
 file_code/
 file_decode/
 _pycache_/
+
 # Ignore node_modules
 node_modules/
 # Ignore build output

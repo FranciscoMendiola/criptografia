@@ -2,17 +2,18 @@ import argparse
 import os
 from src.controlador import procesar_base64, procesar_cesar, procesar_decimado, procesar_afin
 
-def main():
-    tipos_de_cifrado = ['b64', 'af', 'ud', 'ce']
+
+def main():    
+    tipos_de_cifrado = ['b64', 'af', 'dc', 'ce']
 
     parser = argparse.ArgumentParser(description="Cifrador/Descifrador de archivos")
     parser.add_argument("-t", "--type", choices=tipos_de_cifrado, required=True, help="Tipo de cifrado (b64, af, ud, ce)")
     parser.add_argument("-f", "--file", required=True, help="Ruta del archivo de entrada")
-    parser.add_argument("-e", "--extension", required=True, help="Extensión para el archivo de salida (ej. txt, png)")
+    parser.add_argument("-e", "--extention", required=True, help="Extensión para el archivo de salida (ej. txt, png)")
     parser.add_argument("-d", "--decode", action="store_true", help="Descifrar el archivo (si no se especifica, se codifica)")
 
-    parser.add_argument("--shift", type=int, default=3, help="Desplazamiento para César (0..255; por defecto 3)")
-    parser.add_argument("--key", type=int,
+    parser.add_argument("-s,--shift", type=int, default=3, help="Desplazamiento para César (0..255; por defecto 3)")
+    parser.add_argument("-k,--key", type=int,
                         help="Llave multiplicativa para Decimado (0..255; debe ser IMPAR para poder descifrar)")
 
     args = parser.parse_args()
@@ -35,13 +36,15 @@ def main():
             procesar_base64(params)
         elif params["type"] == "af":
             if params["key" and "shift"] is None:
-                raise ValueError("Para decimado debes proporcionar --key y --shift (0..255, impar para descifrar).")
+                raise ValueError("Para decimado debes proporcionar --key (0..255, impar para descifrar) y --shift n.")
             procesar_afin(params)
-        elif params["type"] == "ud":
+        elif params["type"] == "dc":
             if params["key"] is None:
                 raise ValueError("Para decimado debes proporcionar --key (0..255, impar para descifrar).")
             procesar_decimado(params)
         elif params["type"] == "ce":
+            if params["shift"] is None:
+                raise ValueError("Para cesar debes proporcionar --shift n.")
             procesar_cesar(params)   
     except Exception as e:
         print(f"Error: {str(e)}")
